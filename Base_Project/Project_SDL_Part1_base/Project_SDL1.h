@@ -149,7 +149,11 @@ private:
 
 public:
   application(unsigned n_sheep, unsigned n_wolf); // Ctor
-  ~application();                                 // dtor
+  ~application() {
+    SDL_FreeSurface(window_surface_ptr_);
+    SDL_DestroyWindow(window_ptr_);
+}
+;                                 // dtor
 
   int loop(unsigned period); // main loop of the application.
                              // this ensures that the screen is updated

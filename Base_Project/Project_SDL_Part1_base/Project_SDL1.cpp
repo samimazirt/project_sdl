@@ -68,11 +68,6 @@ application::application(unsigned int n_sheep, unsigned int n_wolf) {
     }
 }
 
-//destructeur application - fermer et detruire la fenetre
-application::~application() {
-    SDL_FreeSurface(window_surface_ptr_);
-    SDL_DestroyWindow(window_ptr_);
-}
 
 int application::loop(unsigned period) {
     while (period > 0) {
