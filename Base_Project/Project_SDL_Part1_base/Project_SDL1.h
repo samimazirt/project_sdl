@@ -31,8 +31,8 @@ constexpr unsigned frame_boundary = 100;
 
 
 //charger img
-const std::string mouton_img = "../media/sheep.png";
-const std::string loup_img = "../media/wolf.png";
+const std::string mouton_img = "./media/sheep.png";
+const std::string loup_img = "./media/wolf.png";
 
 // Helper function to initialize SDL
 void init();
@@ -46,16 +46,20 @@ private:
   // todo: Attribute(s) to define its position
 
 public:
-  int pos_x = 0;
-  int pos_y = 0;
-  SDL_Rect *pos_ptr;
+  int pos_x_ = 0;
+  int pos_y_ = 0;
+  SDL_Rect *pos_ptr_;
+
   animal(const std::string& file_path, SDL_Surface* window_surface_ptr);
   // todo: The constructor has to load the sdl_surface that corresponds to the
   // texture
   ~animal(){}; // todo: Use the destructor to release memory and "clean up
                // behind you"
 
-  void draw(){}; // todo: Draw the animal on the screen <-> window_surface_ptr.
+  void draw(){
+    if (SDL_BlitScaled(image_ptr_, NULL, window_surface_ptr_, pos_ptr_) < 0)
+        throw std::runtime_error("error");
+  };// todo: Draw the animal on the screen <-> window_surface_ptr.
                  // Note that this function is not virtual, it does not depend
                  // on the static type of the instance
 
@@ -70,17 +74,16 @@ class sheep : public animal {
   // Ctor
   public:
     sheep(SDL_Surface *window_surface_ptr, unsigned rad) : animal(mouton_img, window_surface_ptr){
-      pos_ptr->h = mouton_h;
-      pos_ptr->w = mouton_w;
+      pos_ptr_->h = mouton_h;
+      pos_ptr_->w = mouton_w;
 
       //mouvement
       srand(time(0) + rad);
-
       do
       {
-        pos_y = -1 + rand() % 3;
-        pos_x = -1 + rand() % 4;
-      } while (0 == pos_y && 0 == pos_x);
+        pos_y_ = -1 + rand() % 3;
+        pos_x_ = -1 + rand() % 4;
+      } while (0 == pos_y_ && 0 == pos_x_);
     };
 
   // Dtor
@@ -95,16 +98,16 @@ class wolf : public animal{
   public:
     //Ctor
     wolf(SDL_Surface *window_surface_ptr, unsigned rad) : animal(loup_img, window_surface_ptr){
-      pos_ptr->h = loup_h;
-      pos_ptr->w = loup_w;
+      pos_ptr_->h = loup_h;
+      pos_ptr_->w = loup_w;
       rad_ = rad;
     };
     //Dtor
     virtual ~wolf(){};
     //move
     virtual void move() override;
-    private:
-      unsigned rad_;
+  private:
+    unsigned rad_;
 };
 // Use only sheep at first. Once the application works
 // for sheep you can add the wolves
@@ -120,15 +123,15 @@ private:
   // here
 
 public:
-  ground(SDL_Surface* window_surface_ptr); // todo: Ctor
+  ground(SDL_Surface* window_surface_ptr);
+  // todo: Dtor, again for clean up (if necessary)
   ~ground(){
-    while (liste_animaux.empty() != true)
-    {
+    while (liste_animaux.empty() != true){
         animal* tmp = liste_animaux.back();
         delete tmp;
         liste_animaux.pop_back();
     }
-}; // todo: Dtor, again for clean up (if necessary)
+};
 
   std::vector<animal*> liste_animaux; //liste des animaux
   void add_animal(animal *animal); // todo: Add an animal

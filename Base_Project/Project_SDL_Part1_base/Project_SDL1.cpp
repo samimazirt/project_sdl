@@ -35,12 +35,12 @@ SDL_Surface* load_surface_for(const std::string& path,
   // See SDL_ConvertSurface
     SDL_Surface* img_surf = IMG_Load(path.c_str());
     if (!img_surf){
-        throw std::runtime_error("surface img couldn't load");
+        throw std::runtime_error(std::string(IMG_GetError()));    
     }
     // Convert created surface to windows surface format.
     SDL_Surface* final_surf = SDL_ConvertSurface(img_surf, window_surface_ptr->format, 0);
     if (!final_surf){
-        throw std::runtime_error("couldn't convert");
+        throw std::runtime_error(std::string(IMG_GetError()));    
     }
     // Free temporary image surface.
     SDL_FreeSurface(img_surf);
@@ -55,7 +55,7 @@ application::application(unsigned int n_sheep, unsigned int n_wolf) {
     window_surface_ptr_ = SDL_GetWindowSurface(window_ptr_);
 
     // todo: Use correct color.
-    SDL_FillRect(window_surface_ptr_, NULL, SDL_MapRGB(window_surface_ptr_->format, 255, 255, 255));
+    SDL_FillRect(window_surface_ptr_, NULL, SDL_MapRGB(window_surface_ptr_->format, 0, 255, 0));
 
     // Create ground with animals.
     g_ptr_ = new ground(window_surface_ptr_);
@@ -77,20 +77,14 @@ application::application(unsigned int n_sheep, unsigned int n_wolf) {
 
 
 int application::loop(unsigned period) {
-    while (period > 0)
-    {
-    
+    while (period > 0){
         for (animal *i : g_ptr_->liste_animaux)
-        {
             i->move();
-        }
         SDL_UpdateWindowSurface(window_ptr_);
-        
         SDL_Delay(frame_time * 1000);
-        SDL_FillRect(window_surface_ptr_, NULL, SDL_MapRGB(window_surface_ptr_->format, 255, 255, 255));
-        period = period - 1;
+        SDL_FillRect(window_surface_ptr_, NULL, SDL_MapRGB(window_surface_ptr_->format, 0, 255, 0));
+        period -= 1;
     }
-
     return 0;
 }
 
@@ -98,19 +92,16 @@ ground::ground(SDL_Surface* window_surface_ptr) {
     window_surface_ptr_ = window_surface_ptr;
 }
 
-
 void ground::add_animal(animal *animal) {
     liste_animaux.push_back(animal);
 }
 
-//fonction pour que le mouton reste dans les limites de la fenetre
+//pour que le mouton reste dans les limites
 int reste_limites(int pos, int max) {
-    if (frame_boundary > pos)
-    {
+    if (frame_boundary > pos){
         return frame_boundary;
     }
-    if ((max - frame_boundary) < pos)
-    {
+    if ((max - frame_boundary) < pos){
         return max - frame_boundary;
     }
     return pos;
@@ -119,18 +110,54 @@ int reste_limites(int pos, int max) {
 
 animal::animal(const std::string &file_path, SDL_Surface* window_surface_ptr) {
     std::cout << file_path + "\n";
-    window_surface_ptr_ = window_surface_ptr;
     image_ptr_ = load_surface_for(file_path, window_surface_ptr);
- 
-
-    pos_ptr = new SDL_Rect();
-    pos_ptr->x = reste_limites((rand() % frame_width) + frame_boundary, frame_width);
-    pos_ptr->y = reste_limites(frame_boundary + (rand() % frame_height), frame_height);
-
+    window_surface_ptr_ = window_surface_ptr;
+    pos_ptr_ = new SDL_Rect();
+    pos_ptr_->x = reste_limites((rand() % frame_width) + frame_boundary, frame_width);
+    pos_ptr_->y = reste_limites(frame_boundary + (rand() % frame_height), frame_height);
     draw();
 }
 
+void sheep::move()
+{
+    if (pos_ptr_->x == frame_boundary || pos_ptr_->x == frame_width - frame_boundary) {
+        pos_x_ *= -1;
+    }
+    if (pos_ptr_->y == frame_boundary || pos_ptr_->y == frame_height - frame_boundary) {
+        pos_y_ *= -1;
+    }
+    pos_ptr_->x = reste_limites(pos_ptr_->x + pos_x_, frame_width);
+    pos_ptr_->y = reste_limites(pos_ptr_->y + pos_y_, frame_height);
+  draw();
+}
 
+void wolf::move()
+{
+    if (pos_ptr_->x == frame_boundary || pos_ptr_->x == frame_width - frame_boundary) {
+        pos_x_ *= -1;
+    }
+    if (pos_ptr_->y == frame_boundary || pos_ptr_->y == frame_height - frame_boundary) {
+        pos_y_ *= -1;
+    }
 
+    srand(time(0) + rad_++);
+    int random = rand() % 4;
+    switch(random)
+    {
+        case 0:
+            pos_x_ = 1;
+            break;
+        case 1:
+            pos_y_ = 1;
+            break;
+        case 2:
+            pos_x_ = -1;
+            break;
+        case 3:
+            pos_y_ = -1;
+    }
+    pos_ptr_->x = reste_limites(pos_ptr_->x + pos_x_, frame_width);
+    pos_ptr_->y = reste_limites(pos_ptr_->y + pos_y_, frame_height);
 
-
+    draw();
+}
