@@ -68,6 +68,7 @@ public:
 class sheep : public animal {
   // todo
   // Ctor
+  public:
     sheep(SDL_Surface *window_surface_ptr, unsigned rad) : animal(mouton_img, window_surface_ptr){
       pos_ptr->h = mouton_h;
       pos_ptr->w = mouton_w;

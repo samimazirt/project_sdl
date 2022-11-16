@@ -33,12 +33,12 @@ SDL_Surface* load_surface_for(const std::string& path,
 
   // Helper function to load a png for a specific surface
   // See SDL_ConvertSurface
-  SDL_Surface* image_surface = IMG_Load(path.c_str());
+  SDL_Surface* img_surface = IMG_Load(path.c_str());
 
     // Convert created surface to windows surface format.
-    SDL_Surface* converted_surface = SDL_ConvertSurface(image_surface, window_surface_ptr->format, 0);
+    SDL_Surface* converted_surface = SDL_ConvertSurface(img_surface, window_surface_ptr->format, 0);
     // Free temporary image surface.
-    SDL_FreeSurface(image_surface);
+    SDL_FreeSurface(img_surface);
     return converted_surface;
 }
 } // namespace
@@ -67,3 +67,10 @@ application::application(unsigned int n_sheep, unsigned int n_wolf) {
         g++;
     }
 }
+
+//destructeur application - fermer et detruire la fenetre
+application::~application() {
+    SDL_FreeSurface(window_surface_ptr_);
+    SDL_DestroyWindow(window_ptr_);
+}
+
