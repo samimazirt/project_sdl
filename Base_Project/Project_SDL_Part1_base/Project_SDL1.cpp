@@ -118,14 +118,15 @@ animal::animal(const std::string &file_path, SDL_Surface* window_surface_ptr) {
     draw();
 }
 
+void boundary_pos_help(int coord, int pos){
+    if (coord == frame_boundary || coord == frame_width - frame_boundary) {
+        pos *= -1;
+    }
+}
 void sheep::move()
 {
-    if (pos_ptr_->x == frame_boundary || pos_ptr_->x == frame_width - frame_boundary) {
-        pos_x_ *= -1;
-    }
-    if (pos_ptr_->y == frame_boundary || pos_ptr_->y == frame_height - frame_boundary) {
-        pos_y_ *= -1;
-    }
+    boundary_pos_help(pos_ptr_->x, pos_x_);
+    boundary_pos_help(pos_ptr_->y, pos_y_);
     pos_ptr_->x = reste_limites(pos_ptr_->x + pos_x_, frame_width);
     pos_ptr_->y = reste_limites(pos_ptr_->y + pos_y_, frame_height);
   draw();
@@ -133,16 +134,11 @@ void sheep::move()
 
 void wolf::move()
 {
-    if (pos_ptr_->x == frame_boundary || pos_ptr_->x == frame_width - frame_boundary) {
-        pos_x_ *= -1;
-    }
-    if (pos_ptr_->y == frame_boundary || pos_ptr_->y == frame_height - frame_boundary) {
-        pos_y_ *= -1;
-    }
-
+    boundary_pos_help(pos_ptr_->x, pos_x_);
+    boundary_pos_help(pos_ptr_->y, pos_y_);
     srand(time(0) + rad_++);
-    int random = rand() % 4;
-    switch(random)
+    int rand_num = rand() % 4;
+    switch(rand_num)
     {
         case 0:
             pos_x_ = 1;
@@ -158,6 +154,5 @@ void wolf::move()
     }
     pos_ptr_->x = reste_limites(pos_ptr_->x + pos_x_, frame_width);
     pos_ptr_->y = reste_limites(pos_ptr_->y + pos_y_, frame_height);
-
     draw();
 }

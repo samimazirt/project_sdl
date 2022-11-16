@@ -82,7 +82,7 @@ class sheep : public animal {
       do
       {
         pos_y_ = -1 + rand() % 3;
-        pos_x_ = -1 + rand() % 4;
+        pos_x_ = -1 + rand() % 3;
       } while (0 == pos_y_ && 0 == pos_x_);
     };
 
