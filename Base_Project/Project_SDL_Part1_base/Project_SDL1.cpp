@@ -77,8 +77,9 @@ application::~application() {
 int application::loop(unsigned period) {
     while (period > 0) {
     
-        for (animal *animal : g_ptr_->liste_animaux) {
-            animal->move();
+        for (animal *i : g_ptr_->liste_animaux)
+        {
+            i->move();
         }
         SDL_UpdateWindowSurface(window_ptr_);
         
@@ -98,6 +99,8 @@ ground::ground(SDL_Surface* window_surface_ptr) {
 void ground::add_animal(animal *animal) {
     liste_animaux.push_back(animal);
 }
+
+
 
 
 
