@@ -33,5 +33,37 @@ SDL_Surface* load_surface_for(const std::string& path,
 
   // Helper function to load a png for a specific surface
   // See SDL_ConvertSurface
+  SDL_Surface* image_surface = IMG_Load(path.c_str());
+
+    // Convert created surface to windows surface format.
+    SDL_Surface* converted_surface = SDL_ConvertSurface(image_surface, window_surface_ptr->format, 0);
+    // Free temporary image surface.
+    SDL_FreeSurface(image_surface);
+    return converted_surface;
 }
 } // namespace
+
+application::application(unsigned int n_sheep, unsigned int n_wolf) {
+    // Create window surface.
+    window_ptr_ = SDL_CreateWindow("SDL2 Example", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+                                   frame_width, frame_height, 0);
+    window_surface_ptr_ = SDL_GetWindowSurface(window_ptr_);
+
+    // todo: Use correct color.
+    SDL_FillRect(window_surface_ptr_, NULL, SDL_MapRGB(window_surface_ptr_->format, 255, 255, 255));
+
+    // Create ground with animals.
+    g_ptr_ = new ground(window_surface_ptr_);
+    unsigned int g = 0;
+    while(g < n_sheep){
+        g_ptr_->add_animal(new sheep(window_surface_ptr_, rad_it));
+        rad_it += 50;
+        g++;
+    }
+    g = 0;
+    while(g < n_wolf){
+        g_ptr_->add_animal(new wolf(window_surface_ptr_, rad_it));
+        rad_it += 50;
+        g++;
+    }
+}
