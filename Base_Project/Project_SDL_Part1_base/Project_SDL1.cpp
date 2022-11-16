@@ -33,14 +33,19 @@ SDL_Surface* load_surface_for(const std::string& path,
 
   // Helper function to load a png for a specific surface
   // See SDL_ConvertSurface
-  SDL_Surface* img_surf = IMG_Load(path.c_str());
-
+    SDL_Surface* img_surf = IMG_Load(path.c_str());
+    if (!img_surf){
+        throw std::runtime_error("surface img couldn't load");
+    }
     // Convert created surface to windows surface format.
     SDL_Surface* final_surf = SDL_ConvertSurface(img_surf, window_surface_ptr->format, 0);
+    if (!final_surf){
+        throw std::runtime_error("couldn't convert");
+    }
     // Free temporary image surface.
     SDL_FreeSurface(img_surf);
     return final_surf;
-}
+    }
 } // namespace
 
 application::application(unsigned int n_sheep, unsigned int n_wolf) {
