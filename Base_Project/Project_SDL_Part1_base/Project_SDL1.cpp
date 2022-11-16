@@ -33,13 +33,13 @@ SDL_Surface* load_surface_for(const std::string& path,
 
   // Helper function to load a png for a specific surface
   // See SDL_ConvertSurface
-  SDL_Surface* img_surface = IMG_Load(path.c_str());
+  SDL_Surface* img_surf = IMG_Load(path.c_str());
 
     // Convert created surface to windows surface format.
-    SDL_Surface* converted_surface = SDL_ConvertSurface(img_surface, window_surface_ptr->format, 0);
+    SDL_Surface* final_surf = SDL_ConvertSurface(img_surf, window_surface_ptr->format, 0);
     // Free temporary image surface.
-    SDL_FreeSurface(img_surface);
-    return converted_surface;
+    SDL_FreeSurface(img_surf);
+    return final_surf;
 }
 } // namespace
 
@@ -55,13 +55,15 @@ application::application(unsigned int n_sheep, unsigned int n_wolf) {
     // Create ground with animals.
     g_ptr_ = new ground(window_surface_ptr_);
     unsigned int g = 0;
-    while(g < n_sheep){
+    while(g < n_sheep)
+    {
         g_ptr_->add_animal(new sheep(window_surface_ptr_, rad_it));
         rad_it += 50;
         g++;
     }
     g = 0;
-    while(g < n_wolf){
+    while(g < n_wolf)
+    {
         g_ptr_->add_animal(new wolf(window_surface_ptr_, rad_it));
         rad_it += 50;
         g++;
@@ -70,7 +72,8 @@ application::application(unsigned int n_sheep, unsigned int n_wolf) {
 
 
 int application::loop(unsigned period) {
-    while (period > 0) {
+    while (period > 0)
+    {
     
         for (animal *i : g_ptr_->liste_animaux)
         {
@@ -111,10 +114,10 @@ int reste_limites(int pos, int max) {
 
 animal::animal(const std::string &file_path, SDL_Surface* window_surface_ptr) {
     std::cout << file_path + "\n";
-    image_ptr_ = load_surface_for(file_path, window_surface_ptr);
     window_surface_ptr_ = window_surface_ptr;
+    image_ptr_ = load_surface_for(file_path, window_surface_ptr);
+ 
 
-    // Set initial (random) position and start animal movement.
     pos_ptr = new SDL_Rect();
     pos_ptr->x = reste_limites((rand() % frame_width) + frame_boundary, frame_width);
     pos_ptr->y = reste_limites(frame_boundary + (rand() % frame_height), frame_height);
