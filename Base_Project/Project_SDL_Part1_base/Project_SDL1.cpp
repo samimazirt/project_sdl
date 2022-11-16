@@ -74,3 +74,38 @@ application::~application() {
     SDL_DestroyWindow(window_ptr_);
 }
 
+int application::loop(unsigned period) {
+    while (period > 0) {
+    
+        for (animal *animal : g_ptr_->liste_animaux) {
+            animal->move();
+        }
+        SDL_UpdateWindowSurface(window_ptr_);
+        
+        SDL_Delay(frame_time * 1000);
+        SDL_FillRect(window_surface_ptr_, NULL, SDL_MapRGB(window_surface_ptr_->format, 255, 255, 255));
+        period = period - 1;
+    }
+
+    return 0;
+}
+
+ground::ground(SDL_Surface* window_surface_ptr) {
+    window_surface_ptr_ = window_surface_ptr;
+}
+
+// Destructor for ground.
+ground::~ground() {
+    while (liste_animaux.empty() != true)
+    {
+        animal* tmp = liste_animaux.back();
+        delete tmp;
+        liste_animaux.pop_back();
+    }
+}
+
+void ground::add_animal(animal *animal) {
+    liste_animaux.push_back(animal);
+}
+
+
