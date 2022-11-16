@@ -95,6 +95,32 @@ void ground::add_animal(animal *animal) {
     liste_animaux.push_back(animal);
 }
 
+//fonction pour que le mouton reste dans les limites de la fenetre
+int reste_limites(int pos, int max) {
+    if (frame_boundary > pos)
+    {
+        return frame_boundary;
+    }
+    if ((max - frame_boundary) < pos)
+    {
+        return max - frame_boundary;
+    }
+    return pos;
+}
+
+
+animal::animal(const std::string &file_path, SDL_Surface* window_surface_ptr) {
+    std::cout << file_path + "\n";
+    image_ptr_ = load_surface_for(file_path, window_surface_ptr);
+    window_surface_ptr_ = window_surface_ptr;
+
+    // Set initial (random) position and start animal movement.
+    pos_ptr = new SDL_Rect();
+    pos_ptr->x = reste_limites((rand() % frame_width) + frame_boundary, frame_width);
+    pos_ptr->y = reste_limites(frame_boundary + (rand() % frame_height), frame_height);
+
+    draw();
+}
 
 
 
