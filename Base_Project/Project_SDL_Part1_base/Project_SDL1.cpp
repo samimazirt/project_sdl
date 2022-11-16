@@ -94,18 +94,11 @@ ground::ground(SDL_Surface* window_surface_ptr) {
     window_surface_ptr_ = window_surface_ptr;
 }
 
-// Destructor for ground.
-ground::~ground() {
-    while (liste_animaux.empty() != true)
-    {
-        animal* tmp = liste_animaux.back();
-        delete tmp;
-        liste_animaux.pop_back();
-    }
-}
 
 void ground::add_animal(animal *animal) {
     liste_animaux.push_back(animal);
 }
+
+
 
 

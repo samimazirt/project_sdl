@@ -121,7 +121,14 @@ private:
 
 public:
   ground(SDL_Surface* window_surface_ptr); // todo: Ctor
-  ~ground(); // todo: Dtor, again for clean up (if necessary)
+  ~ground(){
+    while (liste_animaux.empty() != true)
+    {
+        animal* tmp = liste_animaux.back();
+        delete tmp;
+        liste_animaux.pop_back();
+    }
+}; // todo: Dtor, again for clean up (if necessary)
 
   std::vector<animal*> liste_animaux; //liste des animaux
   void add_animal(animal *animal); // todo: Add an animal
