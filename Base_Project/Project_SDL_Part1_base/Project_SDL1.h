@@ -53,7 +53,9 @@ public:
   animal(const std::string& file_path, SDL_Surface* window_surface_ptr);
   // todo: The constructor has to load the sdl_surface that corresponds to the
   // texture
-  ~animal(){}; // todo: Use the destructor to release memory and "clean up
+  ~animal(){
+    SDL_FreeSurface(image_ptr_);
+  }; // todo: Use the destructor to release memory and "clean up
                // behind you"
 
   void draw(){
@@ -79,11 +81,11 @@ class sheep : public animal {
 
       //mouvement
       srand(time(0) + rad);
-      do
+      while (0 == pos_y_ && 0 == pos_x_)
       {
         pos_y_ = -1 + rand() % 3;
         pos_x_ = -1 + rand() % 3;
-      } while (0 == pos_y_ && 0 == pos_x_);
+      }
     };
 
   // Dtor
@@ -126,12 +128,13 @@ public:
   ground(SDL_Surface* window_surface_ptr);
   // todo: Dtor, again for clean up (if necessary)
   ~ground(){
-    while (liste_animaux.empty() != true){
-        animal* tmp = liste_animaux.back();
-        delete tmp;
-        liste_animaux.pop_back();
-    }
+      while (liste_animaux.empty() != true){
+          animal* tmp = liste_animaux.back();
+          delete tmp;
+          liste_animaux.pop_back();
+      }
 };
+
 
   std::vector<animal*> liste_animaux; //liste des animaux
   void add_animal(animal *animal); // todo: Add an animal
@@ -153,6 +156,7 @@ private:
 public:
   application(unsigned n_sheep, unsigned n_wolf); // Ctor
   ~application() {
+    delete g_ptr_;
     SDL_FreeSurface(window_surface_ptr_);
     SDL_DestroyWindow(window_ptr_);
 }
