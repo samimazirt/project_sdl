@@ -73,6 +73,8 @@ application::application(unsigned int n_sheep, unsigned int n_wolf) {
         rad_it += 50;
         g++;
     }
+    g_ptr_->add_animal(new sheperd(window_surface_ptr_, rad_it));
+    rad_it += 50;
 }
 
 

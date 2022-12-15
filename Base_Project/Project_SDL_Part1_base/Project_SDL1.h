@@ -4,7 +4,7 @@
 #pragma once
 
 #include <SDL.h>
-#include <SDL_image.h>
+#include <SDL2/SDL_image.h>
 #include <iostream>
 #include <map>
 #include <memory>
@@ -25,6 +25,10 @@ constexpr unsigned loup_w = 60;
 constexpr unsigned mouton_h = 60;
 constexpr unsigned mouton_w = 60;
 
+//taille berger
+constexpr unsigned berger_h = 60;
+constexpr unsigned berger_w = 60;
+
 // Minimal distance of animals to the border
 // of the screen
 constexpr unsigned frame_boundary = 100;
@@ -33,6 +37,7 @@ constexpr unsigned frame_boundary = 100;
 //charger img
 const std::string mouton_img = "./media/sheep.png";
 const std::string loup_img = "./media/wolf.png";
+const std::string berger_img = "./media/berger.png";
 
 // Helper function to initialize SDL
 void init();
@@ -94,6 +99,19 @@ class sheep : public animal {
   virtual void move() override;
 };
 
+class sheperd : public animal {
+  public:
+     
+    sheperd(SDL_Surface *window_surface_ptr, unsigned rad) : animal(berger_img, window_surface_ptr){
+      pos_ptr_->h = berger_h;
+      pos_ptr_->w = berger_w;
+      rad_ = rad;
+    };
+  
+  private:
+    unsigned rad_;
+};
+
 // Insert here:
 // class wolf, derived from animal
 class wolf : public animal{
@@ -111,6 +129,7 @@ class wolf : public animal{
   private:
     unsigned rad_;
 };
+
 // Use only sheep at first. Once the application works
 // for sheep you can add the wolves
 
